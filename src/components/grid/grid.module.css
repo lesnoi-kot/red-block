@@ -1,0 +1,13 @@
+.field {
+  --field-width: 0;
+  --field-height: 0;
+  --cell-size: 16px;
+
+  display: grid;
+  grid-template-columns: repeat(var(--field-width), var(--cell-size));
+  grid-template-rows: repeat(var(--field-height), var(--cell-size));
+  width: fit-content;
+  margin: auto;
+
+  background-color: lightslategray;
+}
