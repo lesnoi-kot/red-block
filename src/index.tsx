@@ -3,6 +3,6 @@ import { render } from "solid-js/web";
 
 import "./index.css";
 
-import { Game } from "./App";
+import { App } from "./App";
 
-render(() => <Game />, document.getElementById("root")!);
+render(() => <App />, document.getElementById("root")!);

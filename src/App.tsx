@@ -1,14 +1,13 @@
-import { createSignal } from "solid-js";
+import { Game } from "./components/game/Game";
 import { Grid } from "./components/grid/Grid";
 
-export function Game() {
-  const [count, setCount] = createSignal(0);
-
+export function App() {
   return (
     <div>
       <h1>Puzzle</h1>
-
-      <Grid />
+      <Game>
+        <Grid />
+      </Game>
     </div>
   );
 }
