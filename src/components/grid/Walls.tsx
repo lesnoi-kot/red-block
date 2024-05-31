@@ -1,42 +1,32 @@
 import { For } from "solid-js";
-import { range } from "lodash";
+import { matches, range } from "lodash";
 
-import { Wall } from "../block/Block";
-import type { Level } from "../../models";
+import { type Level } from "../../models";
+import { Wall, type WallProps } from "../block/Wall";
 
 export function Walls(props: { level: Level }) {
-  return (
-    <>
-      <For each={range(1, props.level.width + 1)}>
-        {(col) => (
-          <>
-            <Wall row={1} col={col} width={1} height={1} top />
-            <Wall
-              row={props.level.height}
-              col={col}
-              width={1}
-              height={1}
-              bottom
-            />
-          </>
-        )}
-      </For>
-      <For each={range(1, props.level.height + 1)}>
-        {(row) => (
-          <>
-            <Wall row={row} col={1} width={1} height={1} left />
-            <Wall
-              row={row}
-              col={props.level.width}
-              width={1}
-              height={1}
-              right
-            />
-          </>
-        )}
-      </For>
+  function walls(): WallProps[] {
+    const { width, height, noWalls } = props.level;
 
-      <Wall row={1} col={1} width={1} height={1} top left />
-    </>
-  );
+    return [
+      // Top
+      ...range(1, width + 1).map((col) => ({ row: 1, col, top: true })),
+      // Bottom
+      ...range(1, width + 1).map((col) => ({ row: height, col, bottom: true })),
+      // Left
+      ...range(1, height + 1).map((row) => ({ row, col: 1, left: true })),
+      // Right
+      ...range(1, height + 1).map((row) => ({ row, col: width, right: true })),
+    ]
+      .filter((wall: WallProps) => noWalls.findIndex(matches(wall)) === -1)
+      .concat([
+        // Corners
+        { row: 1, col: 1, top: true, left: true },
+        { row: 1, col: width, top: true, right: true },
+        { row: height, col: 1, bottom: true, left: true },
+        { row: height, col: width, bottom: true, right: true },
+      ]);
+  }
+
+  return <For each={walls()}>{(wallProps) => <Wall {...wallProps} />}</For>;
 }

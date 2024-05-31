@@ -10,9 +10,9 @@ export function moveBlock(
   block: Block,
   deltaRow: number,
   deltaCol: number
-): void {
+): boolean {
   if (deltaRow === 0 && deltaCol === 0) {
-    return;
+    return false;
   }
 
   const otherRects = level.blocks
@@ -40,9 +40,10 @@ export function moveBlock(
     block.col === level.finishPosition.col &&
     block.row === level.finishPosition.row
   ) {
-    console.log("WIN");
-    moveState.draggedBlock = null;
+    return true;
   }
+
+  return false;
 }
 
 function blocksHitTest(block: Block, other: DOMRectReadOnly[]): boolean {

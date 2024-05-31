@@ -9,7 +9,7 @@ import css from "./grid.module.css";
 
 export function Grid() {
   let fieldRef: HTMLDivElement;
-  const level = useContext(GameContext)!;
+  const ctx = useContext(GameContext)!;
 
   function onPointerMove(event: PointerEvent) {
     if (!moveState.draggedBlock) {
@@ -18,15 +18,36 @@ export function Grid() {
 
     const fieldBox = fieldRef.getBoundingClientRect();
     const currCell = new DOMPoint(
-      Math.floor((event.clientX - fieldBox.x) / level.cellSize),
-      Math.floor((event.clientY - fieldBox.y) / level.cellSize)
+      Math.floor((event.clientX - fieldBox.x) / ctx.level.cellSize),
+      Math.floor((event.clientY - fieldBox.y) / ctx.level.cellSize)
     );
+    console.log(moveState.dragCell);
+
     let [deltaRow, deltaCol] = [
       currCell.y - moveState.dragCell.y,
       currCell.x - moveState.dragCell.x,
     ];
 
-    moveBlock(level, moveState.draggedBlock, deltaRow, deltaCol);
+    if (moveBlock(ctx.level, moveState.draggedBlock, deltaRow, deltaCol)) {
+      moveState.draggedBlock = null;
+
+      setTimeout(() => {
+        document
+          .getElementById("player")
+          ?.animate(
+            [{ opacity: 1 }, { opacity: 0, transform: "translateX(-100%)" }],
+            {
+              easing: "linear",
+              duration: 1000,
+              iterations: 1,
+              fill: "forwards",
+            }
+          )
+          .finished.finally(() => {
+            ctx.nextLevel();
+          });
+      }, 0);
+    }
     moveState.dragCell = currCell;
   }
 
@@ -41,8 +62,8 @@ export function Grid() {
     if (event.button === 0) {
       const fieldBox = fieldRef.getBoundingClientRect();
       moveState.dragCell = new DOMPoint(
-        event.clientX - fieldBox.x,
-        event.clientY - fieldBox.y
+        Math.floor((event.clientX - fieldBox.x) / ctx.level.cellSize),
+        Math.floor((event.clientY - fieldBox.y) / ctx.level.cellSize)
       );
       moveState.draggedBlock = block;
       document.body.classList.add("cursor-grabbing");
@@ -65,14 +86,14 @@ export function Grid() {
       id="field"
       class={css.field}
       style={{
-        "--field-width": level.width,
-        "--field-height": level.height,
+        "--field-width": ctx.level.width,
+        "--field-height": ctx.level.height,
         // "--cell-size": "min(5vw, 32px)",
-        "--cell-size": `${level.cellSize}px`,
+        "--cell-size": `${ctx.level.cellSize}px`,
       }}
     >
-      <Walls level={level} />
-      <For each={level.blocks}>
+      <Walls level={ctx.level} />
+      <For each={ctx.level.blocks}>
         {(block) => (
           <Block
             block={block}
@@ -80,7 +101,9 @@ export function Grid() {
           />
         )}
       </For>
-      <For each={level.blocks}>{(block) => <BlockOverlay block={block} />}</For>
+      <For each={ctx.level.blocks}>
+        {(block) => <BlockOverlay block={block} />}
+      </For>
     </div>
   );
 }

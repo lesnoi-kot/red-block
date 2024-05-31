@@ -18,6 +18,7 @@ export type Level = {
   readonly height: number;
   readonly cellSize: number;
   readonly finishPosition: Position;
+  readonly noWalls: Position[];
 
   blocks: Block[];
 };

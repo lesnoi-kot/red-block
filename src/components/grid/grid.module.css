@@ -8,14 +8,24 @@
   grid-template-columns: repeat(var(--field-width), var(--cell-size));
   grid-template-rows: repeat(var(--field-height), var(--cell-size));
   width: fit-content;
-  margin: auto;
+  margin: 0;
+  /* padding: calc(var(--cell-size) / 2); */
 
-  background-color: rgb(50 50 100);
   background-image: url("/FLATSTONES.png");
+  background-clip: padding-box;
   image-rendering: crisp-edges;
-  background-size: 40%;
+  background-size: 64px;
+  box-shadow: inset 0px 0px 5px 10px var(--bg-color);
+}
 
-  /* background-image: repeating-linear-gradient(
+.grey-block {
+  background-color: #cccccc;
+  border-color: #b8b8b8;
+  border-width: 5px;
+}
+
+.debug-grid {
+  background-image: repeating-linear-gradient(
       0deg,
       transparent,
       transparent calc(var(--cell-size) - 1px),
@@ -26,5 +36,5 @@
       transparent,
       transparent calc(var(--cell-size) - 1px),
       magenta var(--cell-size)
-    ); */
+    );
 }
