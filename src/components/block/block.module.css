@@ -1,14 +1,33 @@
 .block {
   background: transparent;
+  cursor: pointer;
   user-select: none;
 }
 
 .nice-block {
   position: relative;
   z-index: 5;
-  background-color: darkorange;
   transition: translate 150ms;
+  background-image: url("/lightnoise.png");
+  background-color: #ff9900;
+  border-left-color: #ffcc00;
+  border-top-color: #ffd52d;
+  border-right-color: hsl(24, 100%, 45%);
+  border-bottom-color: hsl(24, 100%, 55%);
+  border-width: 10px;
+  border-style: outset;
   user-select: none;
   pointer-events: none;
   touch-action: none;
+}
+
+.player-block {
+  background-color: #bd0b0b;
+  border-color: hsl(0, 100%, 50%);
+}
+
+.grey-block {
+  background-color: #cccccc;
+  border-color: #b8b8b8;
+  border-width: 5px;
 }

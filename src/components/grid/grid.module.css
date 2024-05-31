@@ -11,7 +11,11 @@
   margin: auto;
 
   background-color: rgb(50 50 100);
-  background-image: repeating-linear-gradient(
+  background-image: url("/FLATSTONES.png");
+  image-rendering: crisp-edges;
+  background-size: 40%;
+
+  /* background-image: repeating-linear-gradient(
       0deg,
       transparent,
       transparent calc(var(--cell-size) - 1px),
@@ -22,5 +26,5 @@
       transparent,
       transparent calc(var(--cell-size) - 1px),
       magenta var(--cell-size)
-    );
+    ); */
 }

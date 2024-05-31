@@ -26,13 +26,18 @@ export function newBlock(
   row: number,
   col: number,
   height: number,
-  width: number
+  width: number,
+  player?: boolean
 ) {
-  return { row, col, height, width };
+  return { row, col, height, width, player };
 }
 
 export function toGridArea(obj: Position & Size): string {
   return `${obj.row} / ${obj.col} / ${obj.row + obj.height} / ${
     obj.col + obj.width
   }`;
+}
+
+export function blockToRect(block: Block): DOMRectReadOnly {
+  return new DOMRect(block.col, block.row, block.width, block.height);
 }
