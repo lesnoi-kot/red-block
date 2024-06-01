@@ -1,7 +1,12 @@
-import { blockToRect, type Block, type Level } from "../../models";
+import {
+  blockToRect,
+  type Block,
+  type Level,
+  type Position,
+} from "../../models";
 
 export const moveState = {
-  dragCell: new DOMPoint(),
+  dragCell: { row: 0, col: 0 } as Position,
   draggedBlock: null as Block | null,
 };
 
@@ -10,10 +15,16 @@ export function moveBlock(
   block: Block,
   deltaRow: number,
   deltaCol: number
-): boolean {
+): { moved: Position; won: boolean } {
+  const moved = { row: 0, col: 0 };
+
   if (deltaRow === 0 && deltaCol === 0) {
-    return false;
+    return { moved, won: false };
   }
+
+  // Disallow "jumps"
+  deltaRow = Math.sign(deltaRow);
+  deltaCol = Math.sign(deltaCol);
 
   const otherRects = level.blocks
     .filter((that) => that !== block)
@@ -26,6 +37,7 @@ export function moveBlock(
     !blocksHitTest({ ...block, row: block.row + deltaRow }, otherRects)
   ) {
     block.row += deltaRow;
+    moved.row = deltaRow;
   } else if (
     deltaCol !== 0 &&
     block.col + deltaCol > 0 &&
@@ -33,6 +45,7 @@ export function moveBlock(
     !blocksHitTest({ ...block, col: block.col + deltaCol }, otherRects)
   ) {
     block.col += deltaCol;
+    moved.col = deltaCol;
   }
 
   if (
@@ -40,10 +53,10 @@ export function moveBlock(
     block.col === level.finishPosition.col &&
     block.row === level.finishPosition.row
   ) {
-    return true;
+    return { moved, won: true };
   }
 
-  return false;
+  return { moved, won: false };
 }
 
 function blocksHitTest(block: Block, other: DOMRectReadOnly[]): boolean {

@@ -5,8 +5,7 @@
 
 .nice-block {
   position: relative;
-  z-index: 5;
-  transition: translate 150ms;
+  transition: translate 100ms;
   background-image: url("/lightnoise.png");
   background-color: #ff9900;
   border-left-color: #ffcc00;
@@ -26,7 +25,9 @@
 }
 
 .grey-block {
-  background-color: #cccccc;
-  border-color: #b8b8b8;
+  background-color: #525252;
+  border-color: #6e6e6e;
+  background-image: url("/PAVEMENT.png");
+  background-size: 48px;
   border-width: 5px;
 }

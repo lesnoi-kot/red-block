@@ -1,6 +1,18 @@
 import { newBlock, type Block, type Level } from "../../models";
 
 export const levels: Array<() => Level> = [
+  () => ({
+    width: 5,
+    height: 1,
+    cellSize: 64,
+    finishPosition: {
+      row: 1,
+      col: 5,
+    },
+    noWalls: [{ row: 1, col: 5, right: true }],
+    blocks: [newBlock(1, 1, 1, 1, true)] as Block[],
+  }),
+
   // Level 1
   () => ({
     width: 3,
@@ -67,11 +79,25 @@ export const levels: Array<() => Level> = [
 
   // The end
   () => ({
-    width: 3,
-    height: 3,
+    width: 7,
+    height: 7,
     cellSize: 64,
     finishPosition: { row: 1, col: 1 },
     noWalls: [],
-    blocks: [newBlock(2, 2, 1, 1)] as Block[],
+    blocks: [
+      newBlock(3, 3, 1, 1),
+      // newBlock(6, 6, 1, 1),
+      // newBlock(7, 7, 1, 1),
+      // newBlock(9, 9, 1, 1),
+    ] as Block[],
   }),
 ];
+
+export const NULL_LEVEL: Level = {
+  width: 0,
+  height: 0,
+  cellSize: 64,
+  finishPosition: { row: 1, col: 1 },
+  noWalls: [],
+  blocks: [],
+};

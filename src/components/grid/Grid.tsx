@@ -1,54 +1,65 @@
-import { For, onCleanup, onMount, useContext } from "solid-js";
+import { For, onCleanup, onMount } from "solid-js";
+import { clamp } from "lodash";
 
 import { Block, BlockOverlay } from "../block/Block";
 import * as models from "../../models";
-import { GameContext } from "../game/context";
+import { useGameContext } from "../game/context";
 import { Walls } from "./Walls";
 import { moveBlock, moveState } from "./moveBlock";
+import { animatePlayerFadeOut } from "./animations";
 import css from "./grid.module.css";
 
 export function Grid() {
   let fieldRef: HTMLDivElement;
-  const ctx = useContext(GameContext)!;
+  const ctx = useGameContext();
+
+  function onWin() {
+    ctx.onWin();
+    moveState.draggedBlock = null;
+    animatePlayerFadeOut({
+      row: 0,
+      col: ctx.level.finishPosition.col === 1 ? -1 : 1,
+    })?.finally(() => {
+      ctx.nextLevel();
+    });
+  }
 
   function onPointerMove(event: PointerEvent) {
     if (!moveState.draggedBlock) {
       return;
     }
 
+    const { cellSize, width, height } = ctx.level;
     const fieldBox = fieldRef.getBoundingClientRect();
-    const currCell = new DOMPoint(
-      Math.floor((event.clientX - fieldBox.x) / ctx.level.cellSize),
-      Math.floor((event.clientY - fieldBox.y) / ctx.level.cellSize)
-    );
-    console.log(moveState.dragCell);
-
-    let [deltaRow, deltaCol] = [
-      currCell.y - moveState.dragCell.y,
-      currCell.x - moveState.dragCell.x,
+    const currCell = {
+      row: clamp(
+        Math.floor((event.clientY - (fieldBox.y + cellSize / 2)) / cellSize),
+        0,
+        height - 1
+      ),
+      col: clamp(
+        Math.floor((event.clientX - (fieldBox.x + cellSize / 2)) / cellSize),
+        0,
+        width - 1
+      ),
+    };
+    const [deltaRow, deltaCol] = [
+      currCell.row - moveState.draggedBlock.row + 1,
+      currCell.col - moveState.draggedBlock.col + 1,
     ];
 
-    if (moveBlock(ctx.level, moveState.draggedBlock, deltaRow, deltaCol)) {
-      moveState.draggedBlock = null;
+    const { won, moved } = moveBlock(
+      ctx.level,
+      moveState.draggedBlock,
+      deltaRow,
+      deltaCol
+    );
 
-      setTimeout(() => {
-        document
-          .getElementById("player")
-          ?.animate(
-            [{ opacity: 1 }, { opacity: 0, transform: "translateX(-100%)" }],
-            {
-              easing: "linear",
-              duration: 1000,
-              iterations: 1,
-              fill: "forwards",
-            }
-          )
-          .finished.finally(() => {
-            ctx.nextLevel();
-          });
-      }, 0);
+    console.assert(!(moved.col && moved.row), "Only 1 cell move allowed");
+
+    if (won) {
+      onWin();
     }
-    moveState.dragCell = currCell;
   }
 
   function onPointerUp(event: PointerEvent) {
@@ -60,11 +71,6 @@ export function Grid() {
 
   function onPointerDown(block: models.Block, event: PointerEvent) {
     if (event.button === 0) {
-      const fieldBox = fieldRef.getBoundingClientRect();
-      moveState.dragCell = new DOMPoint(
-        Math.floor((event.clientX - fieldBox.x) / ctx.level.cellSize),
-        Math.floor((event.clientY - fieldBox.y) / ctx.level.cellSize)
-      );
       moveState.draggedBlock = block;
       document.body.classList.add("cursor-grabbing");
     }
