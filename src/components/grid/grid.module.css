@@ -1,7 +1,7 @@
 .field {
   --field-width: 0;
   --field-height: 0;
-  --cell-size: 16px;
+  --cell-size: min(calc((100vw / (var(--field-width) + 2))), 64px);
   --wall-size: calc(var(--cell-size) / 2);
 
   position: relative;
@@ -14,8 +14,6 @@
 
   background-image: url("/FLATSTONES.png");
   background-clip: padding-box;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
   background-size: 64px;
   box-shadow: inset 0px 0px 5px 10px var(--bg-color);
 }

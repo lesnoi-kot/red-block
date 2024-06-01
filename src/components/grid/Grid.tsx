@@ -1,5 +1,6 @@
 import { For, onCleanup, onMount } from "solid-js";
 import { clamp } from "lodash";
+import clsx from "clsx";
 
 import { Block, BlockOverlay } from "../block/Block";
 import * as models from "../../models";
@@ -29,16 +30,22 @@ export function Grid() {
       return;
     }
 
-    const { cellSize, width, height } = ctx.level;
+    const { width, height } = ctx.level;
     const fieldBox = fieldRef.getBoundingClientRect();
+    const padding = parseInt(
+      getComputedStyle(fieldRef).getPropertyValue("padding"),
+      10
+    );
+    const cellSize = padding * 2;
+
     const currCell = {
       row: clamp(
-        Math.floor((event.clientY - (fieldBox.y + cellSize / 2)) / cellSize),
+        Math.floor((event.clientY - (fieldBox.y + padding)) / cellSize),
         0,
         height - 1
       ),
       col: clamp(
-        Math.floor((event.clientX - (fieldBox.x + cellSize / 2)) / cellSize),
+        Math.floor((event.clientX - (fieldBox.x + padding)) / cellSize),
         0,
         width - 1
       ),
@@ -90,12 +97,10 @@ export function Grid() {
     <div
       ref={fieldRef!}
       id="field"
-      class={css.field}
+      class={clsx(css.field, "crisp")}
       style={{
         "--field-width": ctx.level.width,
         "--field-height": ctx.level.height,
-        // "--cell-size": "min(5vw, 32px)",
-        "--cell-size": `${ctx.level.cellSize}px`,
       }}
     >
       <Walls level={ctx.level} />

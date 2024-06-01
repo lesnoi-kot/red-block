@@ -1,8 +1,6 @@
 import { splitProps, type ComponentProps } from "solid-js";
 
 import * as models from "../../models";
-import { useGameContext } from "../game/context";
-
 import css from "./block.module.css";
 
 type BlockProps = ComponentProps<"div"> & { block: models.Block };
@@ -23,12 +21,6 @@ export function Block(props: BlockProps) {
 }
 
 export function BlockOverlay(props: BlockProps) {
-  const context = useGameContext();
-  const pos = () => ({
-    row: (props.block.row - 1) * context.level.cellSize,
-    col: (props.block.col - 1) * context.level.cellSize,
-  });
-
   return (
     <div
       id={props.block.player ? "player" : undefined}
@@ -37,7 +29,8 @@ export function BlockOverlay(props: BlockProps) {
         [css["player-block"]]: Boolean(props.block.player),
       }}
       style={{
-        translate: formatTranslate(pos().col, pos().row),
+        "--row": props.block.row - 1,
+        "--col": props.block.col - 1,
         "grid-area": models.toGridArea({
           row: 1,
           col: 1,
@@ -47,8 +40,4 @@ export function BlockOverlay(props: BlockProps) {
       }}
     />
   );
-}
-
-function formatTranslate(x: number, y: number) {
-  return `${x}px ${y}px`;
 }

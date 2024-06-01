@@ -1,18 +1,21 @@
 .block {
   background: transparent;
   user-select: none;
+  touch-action: none;
 }
 
 .nice-block {
   position: relative;
   transition: translate 100ms;
+  translate: calc(var(--col, 0) * var(--cell-size))
+    calc(var(--row, 0) * var(--cell-size));
   background-image: url("/lightnoise.png");
   background-color: #ff9900;
   border-left-color: #ffcc00;
   border-top-color: #ffd52d;
   border-right-color: hsl(24, 100%, 45%);
   border-bottom-color: hsl(24, 100%, 55%);
-  border-width: 10px;
+  border-width: calc(var(--cell-size) / 6);
   border-style: outset;
   user-select: none;
   pointer-events: none;
@@ -22,6 +25,7 @@
 .player-block {
   background-color: #bd0b0b;
   border-color: hsl(0, 100%, 50%);
+  touch-action: none;
 }
 
 .grey-block {
@@ -29,5 +33,6 @@
   border-color: #6e6e6e;
   background-image: url("/PAVEMENT.png");
   background-size: 48px;
-  border-width: 5px;
+  border-width: calc(var(--cell-size) / 8);
+  touch-action: none;
 }

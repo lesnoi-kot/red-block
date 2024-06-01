@@ -1,9 +1,6 @@
-import { useContext } from "solid-js";
 import clsx from "clsx";
 
 import { toGridArea, type Position } from "../../models";
-import { GameContext } from "../game/context";
-
 import css from "./block.module.css";
 
 export type WallProps = Position & {
@@ -14,8 +11,6 @@ export type WallProps = Position & {
 };
 
 export function Wall(props: WallProps) {
-  const ctx = useContext(GameContext)!;
-  const thickness = ctx.level.cellSize / 2;
   const vertical = Boolean(props.left || props.right);
   const horizontal = Boolean(props.top || props.bottom);
 
@@ -29,21 +24,21 @@ export function Wall(props: WallProps) {
           width: 1,
           height: 1,
         }),
-        height: horizontal ? `${thickness}px` : "100%",
-        width: vertical ? `${thickness}px` : "100%",
+        height: horizontal ? `var(--wall-size)` : "100%",
+        width: vertical ? `var(--wall-size)` : "100%",
         translate: `${
           props.left === true
-            ? -thickness
+            ? "calc(0px - var(--wall-size))"
             : props.right === true
-            ? ctx.level.cellSize
-            : 0
-        }px ${
+            ? "var(--cell-size)"
+            : "0px"
+        } ${
           props.bottom === true
-            ? ctx.level.cellSize
+            ? "var(--cell-size)"
             : props.top === true
-            ? -thickness
-            : 0
-        }px`,
+            ? "calc(0px - var(--wall-size))"
+            : "0px"
+        }`,
       }}
     />
   );
